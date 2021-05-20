@@ -13,6 +13,19 @@ public class RendaForm {
     private Boolean fixo;
     private String dataPagamento;
 
+    public RendaForm(int i, int i1, double valor, boolean recebido, String fgd, boolean fixo, String dataPagamento) {
+    }
+
+    public RendaForm(Long idConta, Long idCategoria, Double valor, Boolean recebido, String descricao, Boolean fixo, String dataPagamento) {
+        this.idConta = idConta;
+        this.idCategoria = idCategoria;
+        this.valor = valor;
+        this.recebido = recebido;
+        this.descricao = descricao;
+        this.fixo = fixo;
+        this.dataPagamento = dataPagamento;
+    }
+
     public Long getIdConta() {
         return idConta;
     }

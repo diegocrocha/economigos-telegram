@@ -2,6 +2,9 @@ package com.economigos.economigostelegram.form;
 
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class RendaForm {
 
@@ -13,18 +16,21 @@ public class RendaForm {
     private Boolean fixo;
     private String dataPagamento;
 
-    public RendaForm(int i, int i1, double valor, boolean recebido, String fgd, boolean fixo, String dataPagamento) {
+    public RendaForm() {
     }
 
-    public RendaForm(Long idConta, Long idCategoria, Double valor, Boolean recebido, String descricao, Boolean fixo, String dataPagamento) {
-        this.idConta = idConta;
-        this.idCategoria = idCategoria;
+    public RendaForm(Double valor, String descricao) {
+        this.idConta = 1L;
+        this.idCategoria = 1L;
         this.valor = valor;
-        this.recebido = recebido;
+        this.recebido = true;
         this.descricao = descricao;
-        this.fixo = fixo;
-        this.dataPagamento = dataPagamento;
+        this.fixo = false;
+        this.dataPagamento = LocalDateTime.now().format(DateTimeFormatter.ofPattern("aaaa-MM-dd HH:mm:ss"));
     }
+
+//    formatter = formatter . withLocale ( Locale . INGLÊS );
+
 
     public Long getIdConta() {
         return idConta;

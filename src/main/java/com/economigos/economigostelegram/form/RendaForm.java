@@ -26,10 +26,8 @@ public class RendaForm {
         this.recebido = true;
         this.descricao = descricao;
         this.fixo = false;
-        this.dataPagamento = LocalDateTime.now().format(DateTimeFormatter.ofPattern("aaaa-MM-dd HH:mm:ss"));
+        this.dataPagamento = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
-
-//    formatter = formatter . withLocale ( Locale . INGLÊS );
 
 
     public Long getIdConta() {

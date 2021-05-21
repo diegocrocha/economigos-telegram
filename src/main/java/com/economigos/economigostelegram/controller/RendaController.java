@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 public class RendaController {
     public static Boolean createProducts(RendaForm product) {
         try {
-            new RestTemplate().postForObject("http://localhost:8080/economigos/rendas", product, RendaForm.class);
+            new RestTemplate().postForObject("http://ip172-18-0-32-c2jhshtmrepg00esej4g-8080.direct.labs.play-with-docker.com/economigos/rendas", product, RendaForm.class);
             return true;
         } catch (Exception e) {
             return false;

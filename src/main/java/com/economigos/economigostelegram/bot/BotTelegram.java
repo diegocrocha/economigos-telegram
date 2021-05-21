@@ -112,8 +112,7 @@ public class BotTelegram {
                                 //inserindo a descrição
                                 if (valorB){
                                     resposta = tokenBot.execute(new SendMessage(chatId, "Insira a descrição:"));
-                                    //valor = df.format(mensagem.replace(",","."));
-                                    valor = mensagem;
+                                    valor = mensagem.replace(",",".");
                                     valorB = false;
                                     descricaoB = true;
                                     cont ++;
@@ -163,8 +162,10 @@ public class BotTelegram {
                         }
                     }
                 }catch (Exception e){
+                    System.out.println(e);
                     resposta = tokenBot.execute(new SendMessage(chatId,"Desculpe " + nome + ", não entendi. \uD83D\uDE22" +
                             "\nFica mais facil se você usar os comandos para cadastar. \n/gasto e /receita"));
+                    reiniciar();
                 }
 
                 return UpdatesListener.CONFIRMED_UPDATES_ALL;

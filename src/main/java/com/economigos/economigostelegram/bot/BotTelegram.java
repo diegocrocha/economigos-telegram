@@ -15,16 +15,15 @@ import com.pengrad.telegrambot.response.SendResponse;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class BotTelegram {
     static FilaObj<Receita> filaReceita = new FilaObj<>(20);
     static FilaObj<Gasto> filaGasto = new FilaObj<>(20);
     static TelegramBot tokenBot = new TelegramBot("1680012398:AAF9IkYcMyarOtXVwL4qVQn1733iUOLgtd8");
     static String mensagem, nome, valor = "", descricao = "", categoria = "", conta = "";
-    static boolean gasto, receita, muitos = false;
+    static boolean gasto, receita= false;
     static Calendar calendar = Calendar.getInstance();
-    static int cont = 0, hora = calendar.get(Calendar.HOUR_OF_DAY);
+    static int frasePlural, cont = 0, hora = calendar.get(Calendar.HOUR_OF_DAY);
     static SendResponse resposta;
     static long chatId;
 
@@ -33,8 +32,6 @@ public class BotTelegram {
         receita = false;
         cont = 0;
     }
-
-
 
     public static void main(String[] args) {
 
@@ -51,10 +48,9 @@ public class BotTelegram {
                         switch (mensagem) {
                             case "/start":
                                 resposta = tokenBot.execute(new SendMessage(chatId, "Seja bem vindo(a) " + nome +
-                                        ", aqui vc vai ter praticidade para cadastrar seus gastos e receitas.\n\n" +
-                                        "Sempre que quiser cadastar digite '/' e escolha a opção ou selecione a / no cantinho! \uD83D\uDE09"));
-                                resposta = tokenBot.execute(new SendMessage(chatId, nome + " insira o codigo de verificação:"));
-
+                                        ", aqui vc vai ter praticidade para cadastrar seus gastos e receitas"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5 \n/receita\n\n \uD83D\uDCB8 \n/gasto"));
+                                //resposta = tokenBot.execute(new SendMessage(chatId, nome + " insira o codigo de verificação:"));
                                 System.out.println(update);
                                 System.out.println(nome +" mandou: "+update.message().text());
                                 break;
@@ -64,8 +60,7 @@ public class BotTelegram {
                             case"/sim":
                                 reiniciar();
                                 resposta = tokenBot.execute(new SendMessage(chatId, nome + "Deseja cadastrar um gastou ou receita?"));
-                                resposta = tokenBot.execute(new SendMessage(chatId, "/receita\n\n/gasto"));
-                                muitos = true;
+                                resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5\n/receita\n\n\uD83D\uDCB8\n/gasto"));
                                 break;
 
                             case "/gasto":
@@ -74,6 +69,7 @@ public class BotTelegram {
                                 resposta = tokenBot.execute(new SendMessage(chatId, "Insira o valor:"));
                                 gasto = true;
                                 cont ++;
+                                frasePlural++;
                                 System.out.println(nome +" mandou: "+update.message().text());
 
                                 break;
@@ -84,6 +80,7 @@ public class BotTelegram {
                                 resposta = tokenBot.execute(new SendMessage(chatId, "Insira o valor:"));
                                 receita = true;
                                 cont ++;
+                                frasePlural++;
                                 System.out.println(nome +" mandou: "+update.message().text());
                                 break;
 
@@ -98,20 +95,29 @@ public class BotTelegram {
                             case "ultimo":
                             case "/ultimo":
                                 if (receita){
-                                    filaReceita.peek();
-                                    reiniciar();
+                                    filaReceita.poll();
                                 }
                                 if (gasto){
-                                    filaGasto.peek();
-                                    reiniciar();
+                                    filaGasto.poll();
+
                                 }
+                                reiniciar();
+                                frasePlural --;
+                                resposta = tokenBot.execute(new SendMessage(chatId, nome + "Cadastro cancelado \uD83D\uDE09"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, nome + " Deseja cadastrar um gastou ou receita?"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5 \n/receita\n\n \uD83D\uDCB8 \n/gasto"));
+                                break;
 
                             case "todos":
                             case "/todos":
-                                filaGasto.esvaziar();
                                 filaReceita.esvaziar();
-                                muitos = false;
+                                filaGasto.esvaziar();
                                 reiniciar();
+                                frasePlural = 0;
+                                resposta = tokenBot.execute(new SendMessage(chatId, nome + " Cadastros cancelados \uD83D\uDE09"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, nome + " Deseja cadastrar um gastou ou receita?"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5 \n/receita\n\n \uD83D\uDCB8 \n/gasto"));
+                                break;
 
                             case "confirmar":
                             case "/confirmar":
@@ -127,27 +133,34 @@ public class BotTelegram {
                                 }
                                 resposta = tokenBot.execute(new SendMessage(chatId,"Deseja realizar mais" +
                                         " um cadastro? "));
-                                resposta = tokenBot.execute(new SendMessage(chatId, "/sim\n\n/nao"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDFE2 \n/sim\n\n \uD83D\uDD34 \n/nao"));
                                 break;
 
                             //Cadastro realizado
-                            case "não":
-                            case "/não":
-                                //Criando post gasto
-                                while (!filaGasto.isEmpty()){
-                                    GastoController.createProducts(new GastoForm(filaGasto.peek().getValor(), filaGasto.peek().getDescricao(),
-                                            filaGasto.peek().getCategoria(), filaGasto.peek().getConta()));
-                                }
-                                resposta = tokenBot.execute(new SendMessage(chatId, "Cadastrado realizado com sucesso \uD83D\uDE0D"));
-                                reiniciar();
-                                System.out.println(nome +" mandou: "+update.message().text());
+                            case "nao":
+                            case "/nao":
                                 //Criando post receita
                                 while (!filaReceita.isEmpty()){
-                                    ReceitaController.createProducts(new ReceitaForm(filaGasto.peek().getValor(), filaGasto.peek().getDescricao(),
-                                            filaGasto.peek().getCategoria(), filaGasto.peek().getConta()));
+                                    Receita cadastrarReceita = filaReceita.poll();
+                                    ReceitaController.createProducts(new ReceitaForm(cadastrarReceita.getValor(), cadastrarReceita.getDescricao(),
+                                            cadastrarReceita.getCategoria(), cadastrarReceita.getConta()));
+
                                 }
-                                resposta = tokenBot.execute(new SendMessage(chatId, "Cadastrado realizado com sucesso \uD83D\uDE0D"));
+
+                                //Criando post gasto
+                                while (!filaGasto.isEmpty()){
+                                    Gasto cadastrarGasto = filaGasto.poll();
+                                    GastoController.createProducts(new GastoForm(cadastrarGasto.getValor(), cadastrarGasto.getDescricao(),
+                                            cadastrarGasto.getCategoria(), cadastrarGasto.getConta()));
+                                }
+                                if (frasePlural > 1){
+                                    resposta = tokenBot.execute(new SendMessage(chatId, "Os cadastros fomam realizados com sucesso \uD83D\uDE0D"));
+                                }else {
+                                    resposta = tokenBot.execute(new SendMessage(chatId, "Cadastro realizado com sucesso \uD83D\uDE0D"));
+                                }
                                 reiniciar();
+                                frasePlural = 0;
+
                                 System.out.println(nome +" mandou: "+update.message().text());
                                 break;
 
@@ -188,14 +201,16 @@ public class BotTelegram {
                                                     resposta = tokenBot.execute(new SendMessage(chatId,"Confirmar gasto? " +
                                                             "\nValor: " + valor + "\nDescrição: " + descricao + "\nCategoria: " +
                                                             categoria + "\nConta: " + conta));
-                                                    resposta = tokenBot.execute(new SendMessage(chatId, "/confirmar\n\n/cancelar"));
+                                                    resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDFE2 \n/confirmar" +
+                                                            "\n\n \uD83D\uDD34 \n/cancelar"));
                                                     System.out.println(nome +" mandou: "+update.message().text());
                                                 }else
                                                 if (receita){
                                                     resposta = tokenBot.execute(new SendMessage(chatId,"Confirmar receita? " +
                                                             "\nValor: " + valor + "\nDescrição: " + descricao + "\nCategoria: " +
                                                             categoria + "\nConta: " + conta));
-                                                    resposta = tokenBot.execute(new SendMessage(chatId, "/confirmar\n\n/cancelar"));
+                                                    resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDFE2 \n/confirmar" +
+                                                            "\n\n \uD83D\uDD34 \n/cancelar"));
                                                     cont ++;
                                                     System.out.println(nome +" mandou: "+update.message().text());
                                                 }

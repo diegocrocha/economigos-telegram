@@ -59,7 +59,7 @@ public class BotTelegram {
                             case "sim":
                             case"/sim":
                                 reiniciar();
-                                resposta = tokenBot.execute(new SendMessage(chatId, nome + "Deseja cadastrar um gastou ou receita?"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, nome + " Deseja cadastrar um gastou ou receita?"));
                                 resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5\n/receita\n\n\uD83D\uDCB8\n/gasto"));
                                 break;
 
@@ -154,7 +154,7 @@ public class BotTelegram {
                                             cadastrarGasto.getCategoria(), cadastrarGasto.getConta()));
                                 }
                                 if (frasePlural > 1){
-                                    resposta = tokenBot.execute(new SendMessage(chatId, "Os cadastros fomam realizados com sucesso \uD83D\uDE0D"));
+                                    resposta = tokenBot.execute(new SendMessage(chatId, "Os cadastros foram realizados com sucesso \uD83D\uDE0D"));
                                 }else {
                                     resposta = tokenBot.execute(new SendMessage(chatId, "Cadastro realizado com sucesso \uD83D\uDE0D"));
                                 }

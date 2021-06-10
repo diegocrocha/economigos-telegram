@@ -5,7 +5,6 @@ import com.economigos.economigostelegram.service.EconomigosService;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ReceitaForm {
@@ -27,7 +26,7 @@ public class ReceitaForm {
         this.valor = valor;
         this.recebido = true;
         this.fixo = false;
-        this.dataPagamento = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.dataPagamento = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     public String getDescricao() {

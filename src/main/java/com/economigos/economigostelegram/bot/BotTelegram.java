@@ -20,17 +20,17 @@ public class BotTelegram {
     static FilaObj<Receita> filaReceita = new FilaObj<>(20);
     static FilaObj<Gasto> filaGasto = new FilaObj<>(20);
     static TelegramBot tokenBot = new TelegramBot("1680012398:AAF9IkYcMyarOtXVwL4qVQn1733iUOLgtd8");
-    static String mensagem, nome, valor = "", descricao = "", categoria = "", conta = "";
+    static String mensagem, nome, email, valor = "", descricao = "", categoria = "", conta = "";
     static boolean gasto, receita= false;
     static Calendar calendar = Calendar.getInstance();
-    static int frasePlural, cont = 0, hora = calendar.get(Calendar.HOUR_OF_DAY);
+    static int frasePlural, cont = -1, hora = calendar.get(Calendar.HOUR_OF_DAY);
     static SendResponse resposta;
     static long chatId;
 
     public static void reiniciar(){
         gasto = false;
         receita = false;
-        cont = 0;
+        cont = -1;
     }
 
     public static void main(String[] args) {
@@ -47,10 +47,11 @@ public class BotTelegram {
 
                         switch (mensagem) {
                             case "/start":
+                                reiniciar();
                                 resposta = tokenBot.execute(new SendMessage(chatId, "Seja bem vindo(a) " + nome +
                                         ", aqui vc vai ter praticidade para cadastrar seus gastos e receitas"));
-                                resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5 \n/receita\n\n \uD83D\uDCB8 \n/gasto"));
-                                //resposta = tokenBot.execute(new SendMessage(chatId, nome + " insira o codigo de verificação:"));
+                                resposta = tokenBot.execute(new SendMessage(chatId, nome + " insira o seu email cadastrado no economigos:"));
+                                cont++;
                                 System.out.println(update);
                                 System.out.println(nome +" mandou: "+update.message().text());
                                 break;
@@ -166,6 +167,13 @@ public class BotTelegram {
 
 
                             default:
+                                //validando usuario
+                                if(cont==0){
+                                    resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5 \n/receita\n\n \uD83D\uDCB8 \n/gasto"));
+                                    email = mensagem;
+                                    cont ++;
+                                    System.out.println(nome +" mandou: "+update.message().text());
+                                }
                                 //inserindo a descrição
                                 if (cont==1){
                                     resposta = tokenBot.execute(new SendMessage(chatId, "Insira a descrição:"));

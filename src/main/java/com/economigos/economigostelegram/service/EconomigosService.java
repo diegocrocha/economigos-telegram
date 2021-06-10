@@ -5,9 +5,16 @@ import org.springframework.web.client.RestTemplate;
 
 public class EconomigosService {
 
-    public static ContaDto requestContaByNome(String contaNome){
+    public static Long requestUsuarioIdByEmail(String email){
         RestTemplate restTemplate = new RestTemplate();
-        ContaDto contaDto = restTemplate.getForObject( ServerConfig.getBaseUrl()+"economigos/contas/conta?apelido="+contaNome.trim(), ContaDto.class);
+        Long idUsuario = restTemplate.getForObject( ServerConfig.getBaseUrl()+"economigos/usuarios/email?email="+email.trim(), Long.class);
+
+        return idUsuario;
+    }
+
+    public static ContaDto requestContaByNome(String contaNome, Long idUsuario){
+        RestTemplate restTemplate = new RestTemplate();
+        ContaDto contaDto = restTemplate.getForObject( ServerConfig.getBaseUrl()+"economigos/contas/conta?apelido="+contaNome.trim()+"&idUsuario="+idUsuario.toString().trim(), ContaDto.class);
 
         return contaDto;
     }

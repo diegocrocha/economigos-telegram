@@ -15,10 +15,10 @@ public class GastoForm {
     public GastoForm() {
     }
 
-    public GastoForm(Double valor, String descricao, String categoriaNome, String contaNome) {
+    public GastoForm(Double valor, String descricao, String categoriaNome, String contaNome, Long idUsuario) {
         this.contaNome = contaNome;
         this.categoriaNome = categoriaNome;
-        this.idConta = EconomigosService.requestContaByNome(contaNome).getId();
+        this.idConta = EconomigosService.requestContaByNome(contaNome, idUsuario).getId();
         this.idCategoria = EconomigosService.requestCategoriaByNome(categoriaNome).getId();
         this.descricao = descricao;
         this.gastoCartao = false;

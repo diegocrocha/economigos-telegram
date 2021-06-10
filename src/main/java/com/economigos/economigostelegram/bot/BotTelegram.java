@@ -6,6 +6,7 @@ import com.economigos.economigostelegram.dominio.Gasto;
 import com.economigos.economigostelegram.dominio.Receita;
 import com.economigos.economigostelegram.form.GastoForm;
 import com.economigos.economigostelegram.form.ReceitaForm;
+import com.economigos.economigostelegram.service.EconomigosService;
 import com.economigos.economigostelegram.service.FilaObj;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -26,6 +27,7 @@ public class BotTelegram {
     static int frasePlural, cont = -1, hora = calendar.get(Calendar.HOUR_OF_DAY);
     static SendResponse resposta;
     static long chatId;
+    static Long idUsuario;
 
     public static void reiniciar(){
         gasto = false;
@@ -92,7 +94,7 @@ public class BotTelegram {
                                 resposta = tokenBot.execute(new SendMessage(chatId, "/ultimo\n\n/todos"));
                                 System.out.println(nome +" mandou: "+update.message().text());
                                 break;
-                                
+
                             case "ultimo":
                             case "/ultimo":
                                 if (receita){
@@ -144,7 +146,7 @@ public class BotTelegram {
                                 while (!filaReceita.isEmpty()){
                                     Receita cadastrarReceita = filaReceita.poll();
                                     ReceitaController.createProducts(new ReceitaForm(cadastrarReceita.getValor(), cadastrarReceita.getDescricao(),
-                                            cadastrarReceita.getCategoria(), cadastrarReceita.getConta()));
+                                            cadastrarReceita.getCategoria(), cadastrarReceita.getConta(), idUsuario));
 
                                 }
 
@@ -152,7 +154,7 @@ public class BotTelegram {
                                 while (!filaGasto.isEmpty()){
                                     Gasto cadastrarGasto = filaGasto.poll();
                                     GastoController.createProducts(new GastoForm(cadastrarGasto.getValor(), cadastrarGasto.getDescricao(),
-                                            cadastrarGasto.getCategoria(), cadastrarGasto.getConta()));
+                                            cadastrarGasto.getCategoria(), cadastrarGasto.getConta(), idUsuario));
                                 }
                                 if (frasePlural > 1){
                                     resposta = tokenBot.execute(new SendMessage(chatId, "Os cadastros foram realizados com sucesso \uD83D\uDE0D"));
@@ -169,13 +171,15 @@ public class BotTelegram {
                             default:
                                 //validando usuario
                                 if(cont==0){
+                                    resposta = tokenBot.execute(new SendMessage(chatId, nome + " Deseja cadastrar um gastou ou receita?"));
                                     resposta = tokenBot.execute(new SendMessage(chatId, "\uD83D\uDCB5 \n/receita\n\n \uD83D\uDCB8 \n/gasto"));
                                     email = mensagem;
-                                    cont ++;
+                                    idUsuario = EconomigosService.requestUsuarioIdByEmail(email);
+//                                    cont = ++;
                                     System.out.println(nome +" mandou: "+update.message().text());
                                 }
                                 //inserindo a descrição
-                                if (cont==1){
+                                else if (cont==1){
                                     resposta = tokenBot.execute(new SendMessage(chatId, "Insira a descrição:"));
                                     valor = mensagem.replace(",",".");
                                     cont ++;

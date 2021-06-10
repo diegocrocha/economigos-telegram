@@ -2,6 +2,7 @@ package com.economigos.economigostelegram.form;
 
 import com.economigos.economigostelegram.service.EconomigosService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -24,7 +25,7 @@ public class GastoForm {
         this.valor = valor;
         this.fixo = false;
         this.pago = true;
-        this.dataPagamento = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.dataPagamento = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     public String getDescricao() {
